@@ -1,7 +1,8 @@
 const Movie = require('../models/movie');
-
+const mongoose = require('mongoose');
 const NotFoundError = require('../errors/not-found-err');
 const BadRequestError = require('../errors/bad-request-err');
+const ForbiddenError = require('../errors/forbidden-err');
 
 
 function getMovieResponse(movie) {
@@ -14,8 +15,9 @@ function getMovieResponse(movie) {
 }
 
 function getMovies (req, res, next) {
-  Movie.find({})
+  Movie.find({owner: req.user._id})
     .then((movies) => {
+      console.log(req.user._id);
       res.status(200).send(movies.map((movie) => getMovieResponse(movie)));
     })
     .catch(next);
@@ -23,7 +25,13 @@ function getMovies (req, res, next) {
 
 function createMovie (req, res, next) {
   const { country, director, duration, year, description, image, trailer, nameRU, nameEN, thumbnail, movieId } = req.body;
-  Movie.create({ country, director, duration, year, description, image, trailer, nameRU, nameEN, thumbnail, movieId, owner: req.user._id })
+  Movie.findOne({ owner: req.user._id, movieId: movieId })
+    .then((movie) => {
+      if (movie) {
+        throw new ForbiddenError('Этот фильм уже добавлен в сохраненные');
+      }
+      return Movie.create({ country, director, duration, year, description, image, trailer, nameRU, nameEN, thumbnail, movieId, owner: req.user._id })
+    })
     .then((movie) => res.status(201).send(getMovieResponse(movie)))
     .catch((err) => {
       if (err.name === 'ValidationError') {
@@ -35,13 +43,18 @@ function createMovie (req, res, next) {
 }
 
 function deleteMovie (req, res, next) {
-  Movie.findByIdAndRemove(req.params.movieId)
+  Movie.findOne({ owner: req.user._id, movieId: req.params.movieId })
     .then((movie) => {
       if(!movie) {
         throw new NotFoundError('Нет фильма с таким id');
-      } else {
-        res.status(200).send({ message: 'Фильм удален' });
       }
+      if (movie.owner._id.toString() !== req.user._id) {
+        throw new ForbiddenError('Нет прав на совершение действия');
+      }
+      return Movie.findOneAndRemove({ movieId: req.params.movieId });
+    })
+    .then(() => {
+      res.status(200).send({ message: 'Фильм удален' });
     })
     .catch((err) => {
       if (err.name === 'CastError') {

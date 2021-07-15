@@ -10,7 +10,7 @@ router.post('/signin', login);
 router.use(auth);
 router.use('/users', userRoutes);
 router.use('/movies', movieRoutes);
-router.use('/signout', (req, res, next) => {
+router.post('/signout', (req, res, next) => {
   try {
     res.clearCookie('jwt').send({message: 'Вы вышли из аккаунта'});
   }

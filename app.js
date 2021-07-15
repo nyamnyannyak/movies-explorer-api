@@ -15,5 +15,5 @@ mongoose.connect('mongodb://localhost:27017/moviesprojectdb', {
 
 app.use(bodyParser.json());
 app.use(routes);
-app.use(handleErrors);
+// app.use(handleErrors);
 app.listen(PORT);
