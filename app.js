@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const { errors } = require('celebrate');
 const routes = require('./routes/index');
 const { handleErrors } = require('./middlewares/errors-handler');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
@@ -16,6 +17,8 @@ mongoose.connect('mongodb://localhost:27017/moviesprojectdb', {
 app.use(requestLogger);
 app.use(bodyParser.json());
 app.use(routes);
-// app.use(handleErrors);
 app.use(errorLogger);
+app.use(errors());
+app.use(handleErrors);
+
 app.listen(PORT);
