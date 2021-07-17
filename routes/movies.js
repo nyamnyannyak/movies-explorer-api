@@ -14,14 +14,14 @@ router.post('/', celebrate({
     image: Joi.string().required().pattern(linkRegex),
     trailer: Joi.string().required().pattern(linkRegex),
     thumbnail: Joi.string().required().pattern(linkRegex),
-    movieId: Joi.string().length(24).hex(),
+    movieId: Joi.string(),
     nameRU: Joi.string().required(),
     nameEN: Joi.string().required(),
   }),
 }),createMovie);
 router.delete('/:movieId', celebrate({
   params: Joi.object().keys({
-    cardId: Joi.string().length(24).hex(),
+    movieId: Joi.string(),
   }),
 }), deleteMovie);
 

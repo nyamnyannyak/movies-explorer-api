@@ -17,7 +17,6 @@ function getMovieResponse(movie) {
 function getMovies (req, res, next) {
   Movie.find({owner: req.user._id})
     .then((movies) => {
-      console.log(req.user._id);
       res.status(200).send(movies.map((movie) => getMovieResponse(movie)));
     })
     .catch(next);
