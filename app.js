@@ -7,9 +7,9 @@ const { errors } = require('celebrate');
 const routes = require('./routes/index');
 const { handleErrors } = require('./middlewares/errors-handler');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
-const { PORT = 3000 } = process.env;
+const { PORT = 3000, NODE_ENV, DATABASE_URL} = process.env;
 
-mongoose.connect('mongodb://localhost:27017/moviesprojectdb', {
+mongoose.connect(NODE_ENV === 'production' ? DATABASE_URL : 'mongodb://localhost:27017/moviesprojectdb', {
   useNewUrlParser: true,
   useCreateIndex: true,
   useFindAndModify: false,
