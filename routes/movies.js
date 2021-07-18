@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const { celebrate, Joi } = require('celebrate');
 const { linkRegex } = require('../utils/link-regex');
-const { getMovies, createMovie, deleteMovie} = require('../controllers/movies');
+const { getMovies, createMovie, deleteMovie } = require('../controllers/movies');
 
 router.get('/', getMovies);
 router.post('/', celebrate({
@@ -18,7 +18,7 @@ router.post('/', celebrate({
     nameRU: Joi.string().required(),
     nameEN: Joi.string().required(),
   }),
-}),createMovie);
+}), createMovie);
 router.delete('/:movieId', celebrate({
   params: Joi.object().keys({
     movieId: Joi.string(),

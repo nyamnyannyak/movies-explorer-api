@@ -1,19 +1,19 @@
-const User = require('../models/user');
 const { NODE_ENV, JWT_SECRET } = process.env;
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const User = require('../models/user');
 const NotFoundError = require('../errors/not-found-err');
 const BadRequestError = require('../errors/bad-request-err');
 const UnauthorizedError = require('../errors/unauthorized-err');
 const MongoError = require('../errors/mongo-err');
+
 const SALT_ROUNDS = 10;
 
 function getMe(req, res, next) {
   User.findById(req.user._id)
     .then((user) => {
       if (user) {
-        const { name, email } = user;
-        res.status(200).send({ name, email });
+        res.status(200).send({ name: user.name, email: user.email });
       } else {
         throw new NotFoundError('Нет пользователя с таким id');
       }
@@ -28,7 +28,7 @@ function getMe(req, res, next) {
 }
 
 function updateMe(req, res, next) {
-  const {  name, email } = req.body;
+  const { name, email } = req.body;
   User.findByIdAndUpdate(
     req.user._id,
     { name, email },
@@ -40,8 +40,7 @@ function updateMe(req, res, next) {
   )
     .then((user) => {
       if (user) {
-        const { name, email } = user;
-        res.status(200).send({ name, email });
+        res.status(200).send({ name: user.name, email: user.email });
       } else {
         throw new NotFoundError('Нет пользователя с таким id');
       }
@@ -59,11 +58,10 @@ function register(req, res, next) {
   const { email, password, name } = req.body;
   bcrypt.hash(password, SALT_ROUNDS)
     .then((hash) => User.create({
-      email, password, name, password: hash,
+      email, name, password: hash,
     }))
     .then((user) => {
-      const { name, email } = user;
-      res.status(201).send({ name, email });
+      res.status(201).send({ name: user.name, email: user.email });
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
@@ -106,5 +104,5 @@ module.exports = {
   getMe,
   updateMe,
   register,
-  login
+  login,
 };

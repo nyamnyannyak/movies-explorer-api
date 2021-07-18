@@ -1,4 +1,5 @@
 const express = require('express');
+
 const app = express();
 require('dotenv').config();
 const mongoose = require('mongoose');
@@ -7,7 +8,8 @@ const { errors } = require('celebrate');
 const routes = require('./routes/index');
 const { handleErrors } = require('./middlewares/errors-handler');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
-const { PORT = 3000, NODE_ENV, DATABASE_URL} = process.env;
+
+const { PORT = 3000, NODE_ENV, DATABASE_URL } = process.env;
 
 mongoose.connect(NODE_ENV === 'production' ? DATABASE_URL : 'mongodb://localhost:27017/moviesprojectdb', {
   useNewUrlParser: true,

@@ -18,19 +18,17 @@ router.post('/signin', celebrate({
     email: Joi.string().required().email(),
     password: Joi.string().required().min(8),
   }),
-}),login);
+}), login);
 router.use(auth);
 router.use('/users', userRoutes);
 router.use('/movies', movieRoutes);
 router.post('/signout', (req, res, next) => {
   try {
-    res.clearCookie('jwt').send({message: 'Вы вышли из аккаунта'});
-  }
-  catch(err) {
+    res.clearCookie('jwt').send({ message: 'Вы вышли из аккаунта' });
+  } catch (err) {
     next(err);
   }
-})
+});
 router.use('/*', (req, res, next) => next(new NotFoundError('Путь не найден')));
 
 module.exports = router;
-
