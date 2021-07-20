@@ -13,7 +13,7 @@ function getMe(req, res, next) {
   User.findById(req.user._id)
     .then((user) => {
       if (user) {
-        res.status(200).send({ name: user.name, email: user.email });
+        res.send({ name: user.name, email: user.email });
       } else {
         throw new NotFoundError('Нет пользователя с таким id');
       }
@@ -40,7 +40,7 @@ function updateMe(req, res, next) {
   )
     .then((user) => {
       if (user) {
-        res.status(200).send({ name: user.name, email: user.email });
+        res.send({ name: user.name, email: user.email });
       } else {
         throw new NotFoundError('Нет пользователя с таким id');
       }

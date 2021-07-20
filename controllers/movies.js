@@ -27,7 +27,7 @@ function getMovieResponse(movie) {
 function getMovies(req, res, next) {
   Movie.find({ owner: req.user._id })
     .then((movies) => {
-      res.status(200).send(movies.map((movie) => getMovieResponse(movie)));
+      res.send(movies.map((movie) => getMovieResponse(movie)));
     })
     .catch(next);
 }
@@ -79,7 +79,7 @@ function deleteMovie(req, res, next) {
       return Movie.findByIdAndRemove(req.params.movieId);
     })
     .then(() => {
-      res.status(200).send({ message: 'Фильм удален' });
+      res.send({ message: 'Фильм удален' });
     })
     .catch((err) => {
       if (err.name === 'CastError') {
