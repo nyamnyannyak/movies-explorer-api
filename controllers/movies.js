@@ -6,7 +6,7 @@ const ForbiddenError = require('../errors/forbidden-err');
 function getMovieResponse(movie) {
   const {
     country, director, duration, year, description, image,
-    trailer, nameRU, nameEN, thumbnail, movieId, _id
+    trailer, nameRU, nameEN, thumbnail, movieId, _id,
   } = movie;
   return {
     country,
@@ -20,7 +20,7 @@ function getMovieResponse(movie) {
     nameEN,
     thumbnail,
     movieId,
-    _id
+    _id,
   };
 }
 
