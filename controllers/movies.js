@@ -6,7 +6,7 @@ const ForbiddenError = require('../errors/forbidden-err');
 function getMovieResponse(movie) {
   const {
     country, director, duration, year, description, image,
-    trailer, nameRU, nameEN, thumbnail, movieId,
+    trailer, nameRU, nameEN, thumbnail, movieId, _id
   } = movie;
   return {
     country,
@@ -20,6 +20,7 @@ function getMovieResponse(movie) {
     nameEN,
     thumbnail,
     movieId,
+    _id
   };
 }
 
@@ -67,7 +68,7 @@ function createMovie(req, res, next) {
 }
 
 function deleteMovie(req, res, next) {
-  Movie.findOne({ owner: req.user._id, movieId: req.params.movieId })
+  Movie.findById(req.params.movieId)
     .then((movie) => {
       if (!movie) {
         throw new NotFoundError('Нет фильма с таким id');
@@ -75,7 +76,7 @@ function deleteMovie(req, res, next) {
       if (movie.owner._id.toString() !== req.user._id) {
         throw new ForbiddenError('Нет прав на совершение действия');
       }
-      return Movie.findOneAndRemove({ movieId: req.params.movieId });
+      return Movie.findByIdAndRemove(req.params.movieId);
     })
     .then(() => {
       res.status(200).send({ message: 'Фильм удален' });
